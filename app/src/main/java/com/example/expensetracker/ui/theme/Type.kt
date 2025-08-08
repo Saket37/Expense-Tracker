@@ -1,10 +1,23 @@
 package com.example.expensetracker.ui.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+
+
+data class AppTypography(
+    val headingLarge: TextStyle, // 700
+    val headingSmall: TextStyle, // 600
+    val label: TextStyle, // 500
+    val body: TextStyle // 400
+)
+
+val LocalTypography = staticCompositionLocalOf<AppTypography> {
+    error("No typography provided")
+}
 
 // Set of Material typography styles to start with
 val Typography = Typography(
