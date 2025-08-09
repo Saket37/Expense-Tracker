@@ -15,7 +15,7 @@ ksp = "2.0.21-1.0.27"
 materialIconsExtended = "1.8.2"
 materialIconsExtendedAndroid = "1.7.8"
 navigationCompose = "2.9.0"
-material3E = "1.4.0-alpha16"
+material3E = "1.4.0-beta01"
 roomRuntime = "2.7.2"
 
 [libraries]

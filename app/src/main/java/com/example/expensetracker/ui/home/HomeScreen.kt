@@ -24,27 +24,36 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.expensetracker.R
 import com.example.expensetracker.designsystem.component.AppScaffold
+import com.example.expensetracker.designsystem.component.EmptyStateUI
+import com.example.expensetracker.designsystem.component.ExpenseCard
 import com.example.expensetracker.designsystem.component.SegmentedControl
 import com.example.expensetracker.designsystem.theme.LocalTypography
 import com.example.expensetracker.domain.models.AppTheme
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreenRoot(
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+    viewModel: HomeScreenViewModel = koinViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     HomeScreen(
-        navController = navController
+        navController = navController,
+        uiState = uiState
     )
 }
 
 @Composable
 private fun HomeScreen(
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+    uiState: ExpenseListUiState
 ) {
     val showDialog = remember { mutableStateOf(false) }
     if (showDialog.value == true) {
@@ -70,9 +79,12 @@ private fun HomeScreen(
                 selectedTab = selectedTab,
                 onTabSelected = { selectedTab = it }
             )
+
+            ExpenseCard(expense = uiState.totalAmount)
+            if (uiState.displayItems.isEmpty()) {
+                EmptyStateUI()
+            }
         }
-
-
     }
 }
 

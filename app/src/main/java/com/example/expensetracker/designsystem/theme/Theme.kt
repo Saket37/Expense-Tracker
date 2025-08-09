@@ -17,7 +17,7 @@ import org.koin.compose.koinInject
 private val DarkColorScheme = darkColorScheme(
     primary = PrimaryGreen,           // #50BB77 - Main interactive color
     onPrimary = DarkGreen,            // #0C2718 - Text/icons on primary color
-    secondary = LightGreen,       // #AAD7A4 - Secondary interactive color
+    secondary = LightGreen.copy(0.1f),       // #AAD7A4 - Secondary interactive color
     onSecondary = DarkGreen,          // #0C2718 - Text/icons on secondary color
     tertiary = LightGray,             // #515151 - For less important elements
     onTertiary = OffWhite,         // #FDFDFD - Text/icons on tertiary color
@@ -29,14 +29,15 @@ private val DarkColorScheme = darkColorScheme(
     onSecondaryContainer = LightGray,
     outline = LightGreen,
     surfaceContainerHighest = Color.Black,
-    surfaceContainerLowest = OffWhite
+    surfaceContainerLowest = OffWhite,
+    inverseSurface = PrimaryGreen
 )
 
 // Mapped colors for the Light Theme using the full palette
 private val LightColorScheme = lightColorScheme(
     primary = PrimaryGreen,           // #50BB77 - Main interactive color
     onPrimary = OffWhite,          // #FDFDFD - Text/icons on primary color
-    secondary = LightGreen,       // #AAD7A4 - Secondary interactive color
+    secondary = PrimaryGreen,       // #AAD7A4 - Secondary interactive color
     onSecondary = DarkGreen,          // #0C2718 - Text/icons on secondary color
     tertiary = LightGreen,             // #0C2718 - For less important elements
     onTertiary = PrimaryGreen,         // #FDFDFD - Text/icons on tertiary color
@@ -48,7 +49,8 @@ private val LightColorScheme = lightColorScheme(
     outline = LightGray.copy(0.2f),
     onSecondaryContainer = OffWhite,
     surfaceContainerHighest = OffWhite,
-    surfaceContainerLowest = Color.Black
+    surfaceContainerLowest = Color.Black,
+    inverseSurface = DarkGray
 
 )
 
