@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.Color
 import com.example.expensetracker.domain.models.AppTheme
 import com.example.expensetracker.domain.repository.AppThemeRepository
 import org.koin.compose.koinInject
@@ -24,7 +25,11 @@ private val DarkColorScheme = darkColorScheme(
     onBackground = OffWhite,       // #FDFDFD - Main text color
     surface = DarkGray,               // #383838 - Card and component backgrounds
     onSurface = LightGreen,          // #FDFDFD - Text on cards/components
-    onSurfaceVariant = DarkGreen,// #AAD7A4 - For subtitles or decorative icons
+    onSurfaceVariant = DarkGreen,// #AAD7A4 - For subtitles or decorative icons,
+    onSecondaryContainer = LightGray,
+    outline = LightGreen,
+    surfaceContainerHighest = Color.Black,
+    surfaceContainerLowest = OffWhite
 )
 
 // Mapped colors for the Light Theme using the full palette
@@ -33,13 +38,18 @@ private val LightColorScheme = lightColorScheme(
     onPrimary = OffWhite,          // #FDFDFD - Text/icons on primary color
     secondary = LightGreen,       // #AAD7A4 - Secondary interactive color
     onSecondary = DarkGreen,          // #0C2718 - Text/icons on secondary color
-    tertiary = LightGray,             // #0C2718 - For less important elements
+    tertiary = LightGreen,             // #0C2718 - For less important elements
     onTertiary = PrimaryGreen,         // #FDFDFD - Text/icons on tertiary color
     background = OffWhite,         // #FDFDFD - Screen background
     onBackground = DarkGreen,          // #383838 - Main text color
-    surface = OffWhite,            // #FDFDFD - Card and component backgrounds
+    surface = PrimaryGreen,            // #FDFDFD - Card and component backgrounds
     onSurface = LightGreen,             // #383838 - Text on cards/components
     onSurfaceVariant = LightGray,     // #515151 - For subtitles or disabled text
+    outline = LightGray.copy(0.2f),
+    onSecondaryContainer = OffWhite,
+    surfaceContainerHighest = OffWhite,
+    surfaceContainerLowest = Color.Black
+
 )
 
 

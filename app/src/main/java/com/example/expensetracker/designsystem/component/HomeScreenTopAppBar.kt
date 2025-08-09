@@ -23,10 +23,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.expensetracker.R
 import com.example.expensetracker.designsystem.theme.LocalTypography
-import com.example.expensetracker.designsystem.theme.OffWhite
 
 @Composable
-fun HomeTopAppBar(modifier: Modifier = Modifier) {
+fun HomeTopAppBar(modifier: Modifier = Modifier, onThemeIconClick: () -> Unit) {
     Row(
         Modifier
             .fillMaxWidth()
@@ -56,7 +55,9 @@ fun HomeTopAppBar(modifier: Modifier = Modifier) {
         }
 
         IconButton(
-            onClick = {}, shape = CircleShape, modifier = Modifier
+            onClick = {
+                onThemeIconClick()
+            }, shape = CircleShape, modifier = Modifier
                 .padding(4.dp)
                 .background(MaterialTheme.colorScheme.tertiary, shape = CircleShape)
         ) {
