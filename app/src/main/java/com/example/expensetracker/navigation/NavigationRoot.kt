@@ -8,10 +8,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.example.expensetracker.ui.home.HomeScreenRoot
 
 @Composable
 fun NavigationRoot(
-    modifier: Modifier = Modifier,
     navController: NavHostController,
 ) {
     NavHost(navController = navController, startDestination = "app") {
@@ -24,9 +24,11 @@ private fun NavGraphBuilder.appNavGraph(
     navController: NavController
 ) {
     navigation(startDestination = "home", route = "app") {
-        composable(route = "home") { }
-        composable(route = "report") { }
-        composable(route = "add") { }
+        composable(route = "home") {
+            HomeScreenRoot()
+        }
+//        composable(route = "report") { }
+//        composable(route = "add") { }
 
     }
 }

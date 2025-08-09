@@ -1,4 +1,4 @@
-package com.example.expensetracker.ui.theme
+package com.example.expensetracker.designsystem.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.staticCompositionLocalOf
