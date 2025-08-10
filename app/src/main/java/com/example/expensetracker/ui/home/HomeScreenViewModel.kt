@@ -183,7 +183,7 @@ class HomeScreenViewModel(
             // In a real app, the PERIOD case would use dates selected by the user
             DateFilterType.PERIOD -> {
                 val startDate = _uiState.value.periodStartDate ?: 0L
-                val endDate = _uiState.value.periodEndDate ?: System.currentTimeMillis()
+                val endDate = _uiState.value.periodEndDate ?: 0L
                 Pair(startDate, endDate)
             }
         }
@@ -208,8 +208,14 @@ class HomeScreenViewModel(
             onDateFilterChanged(it)
         }
     }
-    fun onGroupByChanged(newGroupBy: GroupingType) {
-        _uiState.update { it.copy(selectedGroupBy = newGroupBy) }
+    fun onGroupByChanged(selectedName: String) {
+        val newGroupBy = GroupingType.entries.find { it.displayName == selectedName }
+
+        newGroupBy?.let {
+            _uiState.update { currentState ->
+                currentState.copy(selectedGroupBy = it)
+            }
+        }
     }
 
     fun onPeriodStartDateChanged(startDate: Long) {
