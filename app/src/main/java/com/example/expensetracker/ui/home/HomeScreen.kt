@@ -3,20 +3,24 @@ package com.example.expensetracker.ui.home
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
@@ -33,6 +37,7 @@ import com.example.expensetracker.designsystem.component.ExpenseCard
 import com.example.expensetracker.designsystem.component.SegmentedControl
 import com.example.expensetracker.designsystem.theme.LocalTypography
 import com.example.expensetracker.domain.models.AppTheme
+import com.example.expensetracker.domain.models.DateFilterType
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -45,7 +50,8 @@ fun HomeScreenRoot(
 
     HomeScreen(
         navController = navController,
-        uiState = uiState
+        uiState = uiState,
+        onEvent = viewModel::onEvent
     )
 }
 
@@ -53,8 +59,10 @@ fun HomeScreenRoot(
 private fun HomeScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
-    uiState: ExpenseListUiState
-) {
+    uiState: ExpenseListUiState,
+    onEvent: (HomeScreenEvent) -> Unit,
+
+    ) {
     val showDialog = remember { mutableStateOf(false) }
     if (showDialog.value == true) {
         ThemeSelectionDialog(
@@ -63,12 +71,12 @@ private fun HomeScreen(
 
         }
     }
-
+    val lazyState = rememberLazyListState()
     AppScaffold(onThemeIconClick = {
         showDialog.value = true
     }, navController = navController, showAppBar = true) {
-        var selectedTab by remember { mutableStateOf("Today") }
-        val tabs = listOf("Today", "Past 7 Days", "Period")
+        //var selectedTab by remember { mutableStateOf("Today") }
+        val tabs = DateFilterType.entries.map { it.displayName }
 
         Column(
             modifier = Modifier
@@ -76,15 +84,47 @@ private fun HomeScreen(
         ) {
             SegmentedControl(
                 tabs = tabs,
-                selectedTab = selectedTab,
-                onTabSelected = { selectedTab = it }
+                selectedTab = uiState.selectedDateFilter.displayName,
+                onTabSelected = {
+                    onEvent(HomeScreenEvent.FilterSelected(it))
+                }
             )
 
-            ExpenseCard(expense = uiState.totalAmount)
-            if (uiState.displayItems.isEmpty()) {
-                EmptyStateUI()
+            LazyColumn(
+                state = lazyState, contentPadding = PaddingValues(
+                    top = 12.dp, bottom = 32.dp, start = 16.dp, end = 16.dp
+                )
+            ) {
+                item {
+                    ExpenseCard(expense = uiState.totalAmount)
+                }
+                item {
+                    if (uiState.displayItems.isEmpty()) {
+                        EmptyStateUI()
+                    }
+                }
+                item {
+
+                }
             }
+
+
         }
+    }
+}
+
+@Composable
+fun ExpenseTextRow(modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            "Expenses",
+            style = LocalTypography.current.headingSmall,
+            fontSize = 18.sp,
+            color = MaterialTheme.colorScheme.surfaceContainerLowest
+        )
     }
 }
 

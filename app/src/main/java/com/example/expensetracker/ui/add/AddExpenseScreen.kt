@@ -129,6 +129,8 @@ private fun AddExpenses(
                 placeholderText = "Add Notes for Expense",
                 singleLine = false,
                 imeAction = ImeAction.Unspecified,
+                maxLength = 100,
+                showCharLimit = true,
                 onTextChange = {
                     onEvent(AddExpenseEvent.NotesChanged(it))
                 })

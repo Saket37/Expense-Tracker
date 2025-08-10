@@ -63,7 +63,14 @@ class HomeScreenViewModel(
     init {
         observeFilterChanges()
     }
-
+    fun onEvent(event: HomeScreenEvent) {
+        when (event) {
+            is HomeScreenEvent.FilterSelected -> onDateFilterChangedByDisplayName(event.displayName)
+            is HomeScreenEvent.GroupingChanged -> onGroupByChanged(event.groupBy)
+            is HomeScreenEvent.PeriodStartDateSelected -> onPeriodStartDateChanged(event.date)
+            is HomeScreenEvent.PeriodEndDateSelected -> onPeriodEndDateChanged(event.date)
+        }
+    }
 
     private fun observeFilterChanges() {
         viewModelScope.launch {
@@ -194,7 +201,13 @@ class HomeScreenViewModel(
     fun onDateFilterChanged(newFilter: DateFilterType) {
         _uiState.update { it.copy(selectedDateFilter = newFilter) }
     }
+    fun onDateFilterChangedByDisplayName(displayName: String) {
+        val newFilter = DateFilterType.entries.find { it.displayName == displayName }
 
+        newFilter?.let {
+            onDateFilterChanged(it)
+        }
+    }
     fun onGroupByChanged(newGroupBy: GroupingType) {
         _uiState.update { it.copy(selectedGroupBy = newGroupBy) }
     }

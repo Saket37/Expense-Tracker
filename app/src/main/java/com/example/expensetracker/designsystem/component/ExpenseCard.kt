@@ -32,7 +32,6 @@ fun ExpenseCard(modifier: Modifier = Modifier, expense: Double) {
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp)
             .background(
                 color = MaterialTheme.colorScheme.secondary,
                 shape = RoundedCornerShape(16.dp)
