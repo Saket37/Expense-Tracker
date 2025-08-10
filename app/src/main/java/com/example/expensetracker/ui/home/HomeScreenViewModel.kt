@@ -63,6 +63,7 @@ class HomeScreenViewModel(
     init {
         observeFilterChanges()
     }
+
     fun onEvent(event: HomeScreenEvent) {
         when (event) {
             is HomeScreenEvent.FilterSelected -> onDateFilterChangedByDisplayName(event.displayName)
@@ -76,8 +77,10 @@ class HomeScreenViewModel(
         viewModelScope.launch {
             combine(
                 _uiState.map { it.selectedDateFilter }.distinctUntilChanged(),
-                _uiState.map { it.selectedGroupBy }.distinctUntilChanged()
-            ) { dateFilter, groupBy ->
+                _uiState.map { it.selectedGroupBy }.distinctUntilChanged(),
+                _uiState.map { it.periodStartDate }.distinctUntilChanged(),
+                _uiState.map { it.periodEndDate }.distinctUntilChanged()
+            ) { dateFilter, groupBy, startDate, endDate ->
                 Pair(dateFilter, groupBy)
             }.collect { (dateFilter, groupBy) ->
                 fetchAndProcessExpenses(dateFilter, groupBy)
@@ -86,17 +89,13 @@ class HomeScreenViewModel(
     }
 
     private fun fetchAndProcessExpenses(dateFilter: DateFilterType, groupBy: GroupingType) {
-        // Set loading state to true
         _uiState.update { it.copy(isLoading = true) }
 
-        // Determine the date range based on the filter
         val (startDate, endDate) = calculateDateRange(dateFilter)
 
         viewModelScope.launch {
-            // Fetch the combined data (list and total) from the repository
             expenseListRepository.getExpensesAndTotal(startDate, endDate)
                 .catch { e ->
-                    // Handle any errors during data fetching
                     _uiState.update {
                         it.copy(
                             isLoading = false,
@@ -105,20 +104,18 @@ class HomeScreenViewModel(
                     }
                 }
                 .collect { expenseListData ->
-                    // Once data is received, process it based on the grouping
                     val displayItems = when (groupBy) {
                         GroupingType.BY_TIME -> processForTimeGroup(expenseListData.expenses)
                         GroupingType.BY_CATEGORY -> processForCategoryGroup(expenseListData.expenses)
                     }
 
-                    // Update the UI state with the new data
                     _uiState.update {
                         it.copy(
                             isLoading = false,
                             totalAmount = expenseListData.totalAmount,
                             totalCount = expenseListData.expenses.size,
                             displayItems = displayItems,
-                            errorMessage = null // Clear previous errors
+                            errorMessage = null
                         )
                     }
                 }
@@ -166,7 +163,6 @@ class HomeScreenViewModel(
             }
 
             DateFilterType.LAST_7_DAYS -> {
-                // Set the end date to the end of today
                 val endDate = calendar.apply {
                     set(Calendar.HOUR_OF_DAY, 23)
                     set(Calendar.MINUTE, 59)
@@ -174,16 +170,33 @@ class HomeScreenViewModel(
                     set(Calendar.MILLISECOND, 999)
                 }.timeInMillis
 
-                // Go back 6 days to get the start of the 7-day period
                 calendar.add(Calendar.DAY_OF_YEAR, -6)
                 val startDate = getStartOfDayInMillis(calendar)
 
                 Pair(startDate, endDate)
             }
-            // In a real app, the PERIOD case would use dates selected by the user
             DateFilterType.PERIOD -> {
-                val startDate = _uiState.value.periodStartDate ?: 0L
-                val endDate = _uiState.value.periodEndDate ?: 0L
+                val rawStart = _uiState.value.periodStartDate ?: 0L
+                val rawEnd = _uiState.value.periodEndDate ?: 0L
+
+                val calendar = Calendar.getInstance()
+
+                calendar.timeInMillis = rawStart
+                val startDate = calendar.apply {
+                    set(Calendar.HOUR_OF_DAY, 0)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }.timeInMillis
+
+                calendar.timeInMillis = rawEnd
+                val endDate = calendar.apply {
+                    set(Calendar.HOUR_OF_DAY, 23)
+                    set(Calendar.MINUTE, 59)
+                    set(Calendar.SECOND, 59)
+                    set(Calendar.MILLISECOND, 999)
+                }.timeInMillis
+
                 Pair(startDate, endDate)
             }
         }
@@ -201,6 +214,7 @@ class HomeScreenViewModel(
     fun onDateFilterChanged(newFilter: DateFilterType) {
         _uiState.update { it.copy(selectedDateFilter = newFilter) }
     }
+
     fun onDateFilterChangedByDisplayName(displayName: String) {
         val newFilter = DateFilterType.entries.find { it.displayName == displayName }
 
@@ -208,6 +222,7 @@ class HomeScreenViewModel(
             onDateFilterChanged(it)
         }
     }
+
     fun onGroupByChanged(selectedName: String) {
         val newGroupBy = GroupingType.entries.find { it.displayName == selectedName }
 

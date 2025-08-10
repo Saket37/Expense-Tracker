@@ -217,6 +217,8 @@ fun DateRangeSelector(
             onDismissRequest = { showDatePicker = false },
             confirmButton = {
                 TextButton(
+                    enabled = datePickerState.selectedStartDateMillis != null
+                            && datePickerState.selectedEndDateMillis != null,
                     colors = ButtonDefaults.buttonColors(contentColor = Color.Black),
                     onClick = {
                         showDatePicker = false
