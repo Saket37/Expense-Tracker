@@ -3,9 +3,11 @@ package com.example.expensetracker.di
 import com.example.expensetracker.data.repositoryImpl.AddExpenseRepositoryImpl
 import com.example.expensetracker.data.repositoryImpl.AppThemeRepositoryImpl
 import com.example.expensetracker.data.repositoryImpl.ExpenseListRepositoryImpl
+import com.example.expensetracker.data.repositoryImpl.ReportRepositoryImpl
 import com.example.expensetracker.domain.repository.AddExpenseRepository
 import com.example.expensetracker.domain.repository.AppThemeRepository
 import com.example.expensetracker.domain.repository.ExpenseListRepository
+import com.example.expensetracker.domain.repository.ReportRepository
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
@@ -19,5 +21,8 @@ val appModule = module {
     }
     single<AddExpenseRepository> {
         AddExpenseRepositoryImpl(get())
+    }
+    single<ReportRepository> {
+        ReportRepositoryImpl(get())
     }
 }
