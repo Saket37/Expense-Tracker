@@ -7,6 +7,7 @@ import com.example.expensetracker.domain.models.Category
 import com.example.expensetracker.domain.models.DateFilterType
 import com.example.expensetracker.domain.models.GroupingType
 import com.example.expensetracker.domain.repository.ExpenseListRepository
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
@@ -89,11 +90,12 @@ class HomeScreenViewModel(
     }
 
     private fun fetchAndProcessExpenses(dateFilter: DateFilterType, groupBy: GroupingType) {
-        _uiState.update { it.copy(isLoading = true) }
+        _uiState.update { it.copy(isLoading = true, displayItems = emptyList()) }
 
         val (startDate, endDate) = calculateDateRange(dateFilter)
 
         viewModelScope.launch {
+            delay(1000L)
             expenseListRepository.getExpensesAndTotal(startDate, endDate)
                 .catch { e ->
                     _uiState.update {
@@ -175,6 +177,7 @@ class HomeScreenViewModel(
 
                 Pair(startDate, endDate)
             }
+
             DateFilterType.PERIOD -> {
                 val rawStart = _uiState.value.periodStartDate ?: 0L
                 val rawEnd = _uiState.value.periodEndDate ?: 0L

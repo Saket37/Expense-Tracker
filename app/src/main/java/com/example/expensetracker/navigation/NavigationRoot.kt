@@ -33,10 +33,7 @@ private fun NavGraphBuilder.appNavGraph(
         }
         composable(route = "add") {
             AddExpenseRoot(onClose = {
-                navController.navigate("home") {
-                    popUpTo("home") { inclusive = true }
-                }
-
+                navController.popBackStack("home", inclusive = false)
             })
         }
 

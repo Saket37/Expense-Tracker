@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DateRangePicker
@@ -39,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,6 +60,7 @@ import com.example.expensetracker.designsystem.theme.LocalTypography
 import com.example.expensetracker.designsystem.theme.OffWhite
 import com.example.expensetracker.domain.models.AppTheme
 import com.example.expensetracker.domain.models.DateFilterType
+import com.example.expensetracker.domain.models.GroupingType
 import org.koin.androidx.compose.koinViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -84,8 +87,7 @@ private fun HomeScreen(
     navController: NavController,
     uiState: ExpenseListUiState,
     onEvent: (HomeScreenEvent) -> Unit,
-
-    ) {
+) {
     val showDialog = remember { mutableStateOf(false) }
     if (showDialog.value == true) {
         ThemeSelectionDialog(
@@ -117,15 +119,14 @@ private fun HomeScreen(
                     endDate = uiState.periodEndDate,
                     onEvent = onEvent
                 )
-                if (uiState.periodStartDate != null && uiState.periodEndDate != null) {
-                    ExpenseListContent(onEvent = onEvent, uiState = uiState)
-                }
-            } else {
-                ExpenseListContent(onEvent = onEvent, uiState = uiState)
-
             }
 
+            val shouldShowExpenseList = uiState.selectedDateFilter != DateFilterType.PERIOD ||
+                    (uiState.periodStartDate != null && uiState.periodEndDate != null)
 
+            if (shouldShowExpenseList) {
+                ExpenseListContent(onEvent = onEvent, uiState = uiState)
+            }
         }
     }
 }
@@ -149,7 +150,11 @@ fun ExpenseListContent(
             ExpenseCard(expense = uiState.totalAmount)
         }
         item {
-            if (uiState.displayItems.isEmpty()) {
+            if (uiState.isLoading) {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                    CircularProgressIndicator()
+                }
+            } else if (!uiState.isLoading && uiState.displayItems.isEmpty()) {
                 EmptyStateUI()
             }
         }
@@ -157,6 +162,7 @@ fun ExpenseListContent(
             if (uiState.displayItems.isEmpty().not())
                 ExpenseTextRow(
                     selected = uiState.selectedGroupBy.displayName,
+                    totalCount = uiState.totalCount,
                     onSelectGroup = {
                         onEvent(HomeScreenEvent.GroupingChanged(it))
                     }
@@ -322,8 +328,15 @@ fun DateRangeSelector(
 fun ExpenseTextRow(
     modifier: Modifier = Modifier,
     selected: String,
+    totalCount: Int,
     onSelectGroup: (String) -> Unit
 ) {
+    val annotatedText = buildAnnotatedString {
+        append("Expenses")
+        if (selected == GroupingType.BY_TIME.displayName) {
+            append(" ($totalCount)")
+        }
+    }
     //var selected by remember { mutableStateOf("Time") }
     val type = listOf("Time", "Category")
     Row(
@@ -331,7 +344,7 @@ fun ExpenseTextRow(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            "Expenses",
+            annotatedText,
             style = LocalTypography.current.headingSmall,
             fontSize = 18.sp,
             color = MaterialTheme.colorScheme.surfaceContainerLowest
