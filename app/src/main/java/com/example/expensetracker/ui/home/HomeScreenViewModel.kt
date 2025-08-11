@@ -27,7 +27,8 @@ sealed interface ExpenseListItem {
         val description: String,
         val amount: Double,
         val category: Category,
-        val date: Long
+        val date: Long,
+        val title: String
     ) : ExpenseListItem
 
     /**
@@ -131,7 +132,8 @@ class HomeScreenViewModel(
                 description = expense.notes.toString(),
                 amount = expense.amount,
                 category = expense.category,
-                date = expense.date
+                date = expense.date,
+                title = expense.title
             )
         }
     }

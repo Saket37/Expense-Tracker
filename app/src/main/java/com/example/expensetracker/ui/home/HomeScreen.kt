@@ -191,7 +191,7 @@ fun ExpenseListContent(
                     when (item) {
                         is ExpenseListItem.ExpenseItem -> {
                             ExpenseItem(
-                                title = item.description,
+                                title = item.title,
                                 category = item.category.displayName,
                                 notes = item.description,
                                 expense = item.amount,
