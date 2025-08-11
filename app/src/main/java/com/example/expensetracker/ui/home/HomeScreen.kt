@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material3.ButtonDefaults
@@ -42,13 +43,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.example.expensetracker.R
@@ -97,7 +100,8 @@ private fun HomeScreen(
         ThemeSelectionDialog(
             onDismissRequest = { showDialog.value = false }
         ) {
-
+            onEvent(HomeScreenEvent.SetTheme(it))
+            showDialog.value = false
         }
     }
     AppScaffold(onThemeIconClick = {
@@ -384,41 +388,60 @@ fun ThemeSelectionDialog(
     onDismissRequest: () -> Unit,
     onThemeSelected: (AppTheme) -> Unit
 ) {
-    Dialog(onDismissRequest = onDismissRequest) {
+    val xOffset = (-12).dp
+    val yOffset = 124.dp
+    val offset = with(LocalDensity.current) {
+        IntOffset(xOffset.roundToPx(), yOffset.roundToPx())
+    }
+
+    Popup(
+        alignment = Alignment.TopEnd,
+        offset = offset,
+        properties = PopupProperties(
+            usePlatformDefaultWidth = false
+        ),
+        onDismissRequest = { onDismissRequest() }
+    ) {
         Card(
-            shape = RectangleShape,
-            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+            shape = RoundedCornerShape(12.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.tertiary
+            )
         ) {
             Column(
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.padding(horizontal = 4.dp, vertical = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Text(
                     text = "Choose theme",
-                    style = LocalTypography.current.headingLarge,
-                    modifier = Modifier.padding(bottom = 20.dp),
-                    fontSize = 24.sp
+                    style = LocalTypography.current.label,
+                    fontSize = 14.sp
                 )
 
-                ThemeOption(
-                    icon = R.drawable.ic_light_theme,
-                    label = "Light",
-                    onClick = { onThemeSelected(AppTheme.LIGHT) }
-                )
-                ThemeOption(
-                    icon = R.drawable.ic_system_theme,
-                    label = "System",
-                    onClick = { onThemeSelected(AppTheme.SYSTEM) }
-                )
-                ThemeOption(
-                    icon = R.drawable.ic_dark_theme,
-                    label = "Dark",
-                    onClick = { onThemeSelected(AppTheme.DARK) }
-                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    ThemeOption(
+                        icon = R.drawable.ic_light_theme,
+                        label = "Light",
+                        onClick = { onThemeSelected(AppTheme.LIGHT) }
+                    )
+                    ThemeOption(
+                        icon = R.drawable.ic_system_theme,
+                        label = "System",
+                        onClick = { onThemeSelected(AppTheme.SYSTEM) }
+                    )
+                    ThemeOption(
+                        icon = R.drawable.ic_dark_theme,
+                        label = "Dark",
+                        onClick = { onThemeSelected(AppTheme.DARK) }
+                    )
 
-
+                }
             }
+
         }
     }
 }
@@ -430,15 +453,14 @@ private fun ThemeOption(
     label: String,
     onClick: () -> Unit
 ) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         IconButton(onClick = onClick) {
             Icon(
                 painter = painterResource(icon),
                 contentDescription = "$label Theme",
-                modifier = Modifier.size(32.dp),
+                modifier = Modifier.size(24.dp),
             )
         }
         Text(

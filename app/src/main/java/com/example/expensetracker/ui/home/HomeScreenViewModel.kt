@@ -3,9 +3,11 @@ package com.example.expensetracker.ui.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.expensetracker.data.local.entity.Expense
+import com.example.expensetracker.domain.models.AppTheme
 import com.example.expensetracker.domain.models.Category
 import com.example.expensetracker.domain.models.DateFilterType
 import com.example.expensetracker.domain.models.GroupingType
+import com.example.expensetracker.domain.repository.AppThemeRepository
 import com.example.expensetracker.domain.repository.ExpenseListRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,7 +58,8 @@ data class ExpenseListUiState(
 )
 
 class HomeScreenViewModel(
-    private val expenseListRepository: ExpenseListRepository
+    private val expenseListRepository: ExpenseListRepository,
+    private val themeRepository: AppThemeRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ExpenseListUiState())
@@ -72,6 +75,13 @@ class HomeScreenViewModel(
             is HomeScreenEvent.GroupingChanged -> onGroupByChanged(event.groupBy)
             is HomeScreenEvent.PeriodStartDateSelected -> onPeriodStartDateChanged(event.date)
             is HomeScreenEvent.PeriodEndDateSelected -> onPeriodEndDateChanged(event.date)
+            is HomeScreenEvent.SetTheme -> setTheme(event.theme)
+        }
+    }
+
+    private fun setTheme(theme: AppTheme) {
+        viewModelScope.launch {
+            themeRepository.setTheme(theme)
         }
     }
 
@@ -85,6 +95,7 @@ class HomeScreenViewModel(
             ) { dateFilter, groupBy, startDate, endDate ->
                 Pair(dateFilter, groupBy)
             }.collect { (dateFilter, groupBy) ->
+                _uiState.update { it.copy(totalAmount = 0.0) }
                 fetchAndProcessExpenses(dateFilter, groupBy)
             }
         }
