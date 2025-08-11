@@ -120,10 +120,7 @@ fun BoxScope.BottomNavPanel(
         BottomNavPanelWithCutOut(
             navigateToHome = {
                 if (currentDestination != "home") {
-                    navController.navigate("home") {
-                        popUpTo("home") { inclusive = false }
-                        launchSingleTop = true
-                    }
+                    navController.popBackStack()
                 }
             },
             navigateToReport = {
@@ -158,7 +155,6 @@ fun BoxScope.BottomNavPanel(
                 modifier = Modifier.size(36.dp),
                 contentDescription = null
             )
-            // Your central action button (e.g., the camera icon)
         }
     }
 }

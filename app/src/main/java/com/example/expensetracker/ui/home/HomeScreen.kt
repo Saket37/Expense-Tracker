@@ -146,6 +146,7 @@ fun ExpenseListContent(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        // TODO update while its loading
         item {
             ExpenseCard(expense = uiState.totalAmount)
         }
