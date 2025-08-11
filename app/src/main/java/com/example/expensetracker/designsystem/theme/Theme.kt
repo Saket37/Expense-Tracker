@@ -1,17 +1,18 @@
 package com.example.expensetracker.designsystem.theme
 
+import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
 import com.example.expensetracker.domain.models.AppTheme
-import com.example.expensetracker.domain.repository.AppThemeRepository
-import org.koin.compose.koinInject
 
 
 private val DarkColorScheme = darkColorScheme(
@@ -58,15 +59,12 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun ExpenseTrackerTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
+    appTheme: AppTheme = AppTheme.SYSTEM,
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-
-    val appThemeRepository: AppThemeRepository = koinInject()
-    val theme by appThemeRepository.theme.collectAsState(initial = AppTheme.SYSTEM)
-
-    val colorScheme = when (theme) {
+    val colorScheme = when (appTheme) {
         AppTheme.LIGHT -> LightColorScheme
         AppTheme.DARK -> DarkColorScheme
         AppTheme.SYSTEM -> {
@@ -76,11 +74,29 @@ fun ExpenseTrackerTheme(
 //                    context
 //                )
 //            } else {
-            if (isSystemInDarkTheme()) DarkColorScheme else LightColorScheme
+            if (darkTheme) DarkColorScheme else LightColorScheme
             //}
         }
     }
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        // A SideEffect runs after every successful composition
+        SideEffect {
+            val window = (view.context as Activity).window
 
+            // Set the status bar color to be transparent
+            // This is often done with enableEdgeToEdge, but can be set here too
+            //window.statusBarColor = colorScheme.background.toArgb()
+
+            // This line tells the system whether the icons should be dark or light
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars =
+                when (appTheme) {
+                    AppTheme.LIGHT -> true
+                    AppTheme.DARK -> false
+                    AppTheme.SYSTEM -> !darkTheme
+                }
+        }
+    }
 
 //    val colorScheme = when {
 //        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
