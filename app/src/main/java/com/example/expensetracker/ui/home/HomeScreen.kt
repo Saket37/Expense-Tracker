@@ -1,6 +1,10 @@
 package com.example.expensetracker.ui.home
 
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -176,24 +180,36 @@ fun ExpenseListContent(
                 is ExpenseListItem.CategorySummaryItem -> "category-${item.category.name}"
             }
         }) { index, item ->
-            when (item) {
-                is ExpenseListItem.ExpenseItem -> {
-                    ExpenseItem(
-                        title = item.description,
-                        category = item.category.displayName,
-                        notes = item.description,
-                        expense = item.amount,
-                        time = item.date
-                    )
+            AnimatedVisibility(
+                visible = true,
+                enter = fadeIn() + slideInVertically(
+                    initialOffsetY = { it / 2 }
+                ),
+                exit = fadeOut()
+            ) {
+                Column(modifier = Modifier.animateItem()) {
+                    when (item) {
+                        is ExpenseListItem.ExpenseItem -> {
+                            ExpenseItem(
+                                title = item.description,
+                                category = item.category.displayName,
+                                notes = item.description,
+                                expense = item.amount,
+                                time = item.date
+                            )
+                        }
+
+                        is ExpenseListItem.CategorySummaryItem -> {
+                            ExpenseCategoryItem(
+                                title = item.category.displayName,
+                                expense = item.totalAmount
+                            )
+                        }
+                    }
                 }
 
-                is ExpenseListItem.CategorySummaryItem -> {
-                    ExpenseCategoryItem(
-                        title = item.category.displayName,
-                        expense = item.totalAmount
-                    )
-                }
             }
+
         }
     }
 }
