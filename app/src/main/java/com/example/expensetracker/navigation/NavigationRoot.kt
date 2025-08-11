@@ -1,5 +1,12 @@
 package com.example.expensetracker.navigation
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.EaseInBounce
+import androidx.compose.animation.core.EaseInOut
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -28,10 +35,27 @@ private fun NavGraphBuilder.appNavGraph(
         composable(route = "home") {
             HomeScreenRoot(navController = navController)
         }
-        composable(route = "report") {
+        composable(route = "report", enterTransition = {
+            slideIntoContainer(
+                AnimatedContentTransitionScope.SlideDirection.Left,
+                tween(durationMillis = 400, easing = EaseInBounce)
+            )
+        }, exitTransition = {
+            slideOutOfContainer(
+                AnimatedContentTransitionScope.SlideDirection.Right,
+                tween(400, easing = EaseInOut)
+            )
+        }) {
             ReportScreenRoot(navController = navController)
         }
-        composable(route = "add") {
+        composable(route = "add", exitTransition = {
+            slideOutVertically() + fadeOut()
+        }, enterTransition = {
+            slideIntoContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Up,
+                tween(durationMillis = 450, easing = EaseInBounce)
+            )
+        }) {
             AddExpenseRoot(onClose = {
                 navController.popBackStack("home", inclusive = false)
             })

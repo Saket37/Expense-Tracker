@@ -81,6 +81,7 @@ fun ExpenseTrackerTheme(
         }
     }
 
+
 //    val colorScheme = when {
 //        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
 //            val context = LocalContext.current
@@ -90,6 +91,7 @@ fun ExpenseTrackerTheme(
 //        darkTheme -> DarkColorScheme
 //        else -> LightColorScheme
 //    }
+
 
     CompositionLocalProvider(
         LocalTypography provides ExpenseTrackerTypography

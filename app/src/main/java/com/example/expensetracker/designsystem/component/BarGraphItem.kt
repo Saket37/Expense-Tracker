@@ -26,16 +26,20 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.expensetracker.designsystem.theme.DarkGreen
+import com.example.expensetracker.designsystem.theme.FoodLight
 import com.example.expensetracker.designsystem.theme.LightGray
 import com.example.expensetracker.designsystem.theme.LightGreen
 import com.example.expensetracker.designsystem.theme.LocalTypography
+import com.example.expensetracker.designsystem.theme.PurpleGrey80
+import com.example.expensetracker.designsystem.theme.Test
 import com.example.expensetracker.ui.report.BarDetails
 
 
 @Composable
 fun BarGraphItem(
     barDetails: List<BarDetails>,
-    barColor: Color = Color.Blue,
+    barColor: Color = DarkGreen
 ) {
     Column(
         modifier = Modifier
@@ -83,7 +87,7 @@ fun BarGraphItem(
                             detail.barText,
                             style = LocalTypography.current.label,
                             color = barColor,
-                            fontSize = 12.sp
+                            fontSize = 12.sp,
                         )
                         Spacer(Modifier.height(3.dp))
                         Box(

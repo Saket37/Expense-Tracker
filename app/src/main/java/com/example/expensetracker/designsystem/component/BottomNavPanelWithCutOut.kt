@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.expensetracker.R
-import com.example.expensetracker.designsystem.theme.LightGray
 
 @Composable
 fun BoxScope.BottomNavPanelWithCutOut(
@@ -68,7 +67,7 @@ fun BoxScope.BottomNavPanelWithCutOut(
                             .height(36.dp)
                             .width(64.dp)
                             .clip(RoundedCornerShape(32.dp))
-                            .background(LightGray)
+                            .background(MaterialTheme.colorScheme.onSecondaryContainer)
                     )
                 }
                 Icon(
@@ -91,7 +90,7 @@ fun BoxScope.BottomNavPanelWithCutOut(
                             .height(36.dp)
                             .width(64.dp)
                             .clip(RoundedCornerShape(32.dp))
-                            .background(LightGray)
+                            .background(MaterialTheme.colorScheme.onSecondaryContainer)
                     )
                 }
                 Icon(

@@ -21,5 +21,7 @@ val Food = Color(0xFFF0B573)
 val FoodLight = Color(0xFFCF8B50)
 val Travel = Color(0xFF62B1FB)
 val TravelLight = Color(0xFF5491CA)
+
+val Test = Color(0xFF5C4033)
 //val Utility = Color()
 //val Staff = Color()
