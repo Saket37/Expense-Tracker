@@ -140,6 +140,12 @@ private fun AddExpenses(
                 onEvent(AddExpenseEvent.SaveExpense)
                 onClose()
             })
+
+            Card (
+                border = BorderStroke()
+            ){
+
+            }
         }
 
     }
