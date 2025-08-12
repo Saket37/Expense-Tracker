@@ -37,3 +37,12 @@ The project follows a clean architecture pattern, organized into layers for bett
 -   `designsystem`: A dedicated package for reusable UI components, typography, colors, and theming, ensuring a consistent look and feel across the app.
 -   `di`: Koin modules for providing dependencies across the application.
 
+## Screenshots
+
+**Light Mode**
+
+
+
+
+
+
