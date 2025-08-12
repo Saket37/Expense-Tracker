@@ -13,7 +13,13 @@ object Utility {
 
         return zonedDateTime.format(formatter)
     }
+    fun formatDate(timeInMillis: Long): String {
+        val instant = Instant.ofEpochMilli(timeInMillis)
+        val formatter = DateTimeFormatter.ofPattern("dd/MMM/yy")
+            .withZone(ZoneId.systemDefault())
 
+        return formatter.format(instant)
+    }
     fun getTimestampForDate(year: Int, month: Int, day: Int): Long {
         val calendar = Calendar.getInstance()
         calendar.set(year, month - 1, day, 12, 0, 0)

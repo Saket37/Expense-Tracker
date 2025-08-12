@@ -27,7 +27,7 @@ import com.example.expensetracker.designsystem.theme.LocalTypography
 @Composable
 fun HomeTopAppBar(modifier: Modifier = Modifier, onThemeIconClick: () -> Unit) {
     Row(
-        Modifier
+        modifier
             .fillMaxWidth()
             .background(color = MaterialTheme.colorScheme.background)
             .padding(

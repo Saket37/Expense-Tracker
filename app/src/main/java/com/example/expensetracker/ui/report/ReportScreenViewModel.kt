@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -17,7 +18,8 @@ data class ExpenseReportState(
     val dateRangeLabel: String = "",
     val categoryTotals: List<CategoryTotal> = emptyList(),
     val error: String? = null,
-    val barDetails: List<BarDetails> = emptyList()
+    val barDetails: List<BarDetails> = emptyList(),
+    val expensesByDay: Map<Long, List<Expense>> = emptyMap()
 )
 
 class ReportScreenViewModel(private val reportRepository: ReportRepository) : ViewModel() {
@@ -63,11 +65,25 @@ class ReportScreenViewModel(private val reportRepository: ReportRepository) : Vi
         val dateRangeLabel =
             "${dateFormat.format(Date(minDate))} - ${dateFormat.format(Date(maxDate))}"
 
+        val expensesByDay: Map<Long, List<Expense>> = expenses
+            .groupBy { expense ->
+                val cal = Calendar.getInstance().apply {
+                    timeInMillis = expense.date
+                    set(Calendar.HOUR_OF_DAY, 0)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }
+                cal.timeInMillis
+            }
+
+
         return ExpenseReportState(
             grandTotal = grandTotal,
             dateRangeLabel = dateRangeLabel,
             categoryTotals = categoryTotals,
-            barDetails = barDetails
+            barDetails = barDetails,
+            expensesByDay = expensesByDay
         )
     }
 }

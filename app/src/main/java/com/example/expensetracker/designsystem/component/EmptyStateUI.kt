@@ -22,7 +22,7 @@ import com.example.expensetracker.designsystem.theme.LocalTypography
 @Composable
 fun EmptyStateUI(modifier: Modifier = Modifier) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
