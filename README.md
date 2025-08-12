@@ -22,6 +22,8 @@ your spending habits.
   your preference.
 - **Offline First:** All data is stored locally on your device using a Room database, ensuring full
   functionality without an internet connection.
+- **Navigation Animations:** All screens have a transition effect.
+- **Duplicate Entry:** The entry for expenses supports duplicate data entry detection and will notify the user that they have already entered this value. The time range for duplicate entry is 5 minutes.
 
 ## Architecture & Tech Stack
 
